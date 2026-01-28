@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About | Delicious Recipe</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    /* Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body, html {
+      font-family: 'Segoe UI', sans-serif;
+      height: 100%;
+      background: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836') no-repeat center center/cover;
+      color: white;
+    }
+
+    header {
+      background: #ff7f50;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+    }
+
+    .logo {
+      font-size: 2rem;
+      font-weight: bold;
+    }
+
+    nav {
+      display: flex;
+      gap: 5.9rem;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: 500;
+      transition: color 0.3s ease;   
+    }
+
+    nav a:hover {
+      color: #161615;
+      font: bold;
+    }
+
+    .menu-toggle {
+      display: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+    }
+
+    .about-section {
+      max-width: 800px;
+      margin: 5rem auto;
+      background: rgba(87, 81, 81, 0.9);
+      padding: 2rem;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .about-section h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .about-section p {
+      font-size: 1.1rem;
+      line-height: 1.8;
+    }
+
+    footer {
+      background: rgba(0, 0, 0, 0.9);
+      padding: 1rem 2rem;
+      text-align: center;
+      position: relative;
+      bottom: -9.4%;
+      width: 100%;
+    }
+
+    .social-icons {
+      margin-top: 0.5rem;
+    }
+
+    .social-icons a {
+      color: white;
+      margin: 0 2%;
+      font-size: 1.4rem;
+      transition: color 0.3s;
+    }
+
+    .social-icons a:hover {
+      color: #ffcc00;
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        display: none;
+        flex-direction: column;
+        background: rgba(0, 0, 0, 0.9);
+        position: absolute;
+        top: 60px;
+        right: 0;
+        width: 200px;
+        padding: 1rem;
+        border-radius: 8px;
+      }
+
+      nav.active {
+        display: flex;
+      }
+
+      .menu-toggle {
+        display: block;
+        color: white;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">Delicious Recipe</div>
+    <i class="fas fa-bars menu-toggle" id="menuToggle"></i>
+    <nav id="navMenu">
+      <a href="#">Home</a>
+      <a href="#">Recipes</a>
+      <a href="#">Blog</a>
+      <a href="#">Contact</a>
+    </nav>
+  </header>
+
+  <section class="about-section">
+    <h1>About Us</h1>
+    <p>
+      Welcome to <strong>Delicious Recipe</strong> – your go-to destination for mouthwatering recipes from all around the world. 
+      Whether you're a beginner or a seasoned chef, we provide easy-to-follow recipes, cooking tips, and food inspiration 
+      to spice up your kitchen life. We believe food brings people together – and we're here to make it delicious.
+    </p>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Delicious Recipe. All rights reserved.</p>
+    <div class="social-icons">
+      <a href="#"><i class="fab fa-facebook-f"></i></a>
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-twitter"></i></a>
+    </div>
+  </footer>
+
+  <script>
+    const toggle = document.getElementById('menuToggle');
+    const nav = document.getElementById('navMenu');
+
+    toggle.addEventListener('click', () => {
+      nav.classList.toggle('active');
+    });
+  </script>
+
+</body>
+</html>

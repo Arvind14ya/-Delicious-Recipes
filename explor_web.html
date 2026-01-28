@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Delicious Recipes - Explore & Search</title>
+  <meta name="description" content="Modern responsive cooking website with recipes, filters, and search." />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+  />
+  <style>
+    :root {
+      --bg: #fffdf7;
+      --text: #222;
+      --accent: #f76c6c;
+      --card: #fff;
+      --hover-shadow: rgba(247, 108, 108, 0.5);
+      --footer-bg: #f76c6c;
+      --footer-text: white;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+    /* --- Header --- */
+    header.site-header {
+      background: var(--accent);
+      color: white;
+      padding: 1rem 0.5rem;
+      box-shadow: 0 4px 12px rgba(247, 108, 108, 0.4);
+      text-align: center;
+    }
+    header.site-header h1 {
+      font-size: 2rem;
+      margin-bottom: 0.2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      user-select: none;
+    }
+    header.site-header h1 .fa-utensils {
+      font-size: 1.8rem;
+    }
+    header.site-header p {
+      font-weight: 600;
+      font-size: 1.1rem;
+      font-style: italic;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1rem;
+      flex-grow: 1;
+    }
+
+    /* --- Explore Section --- */
+    .explore-section {
+      margin: 2rem 0;
+      text-align: center;
+    }
+    .explore-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .explore-btn {
+      background: #f9f9f9;
+      border: 2px solid var(--accent);
+      color: var(--accent);
+      font-weight: 600;
+      padding: 0.6rem 1.2rem;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      user-select: none;
+      min-width: 80px;
+      text-transform: capitalize;
+    }
+    .explore-btn:hover {
+      background: #fdecea;
+      box-shadow: 0 5px 12px rgba(247, 108, 108, 0.3);
+      transform: translateY(-6px);
+    }
+    .explore-btn.active {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 6px 15px rgba(247, 108, 108, 0.7);
+      transform: translateY(-6px);
+      border-color: #e74c3c;
+    }
+
+    /* --- Search Bar --- */
+    .search-bar-container {
+      max-width: 400px;
+      margin: 0 auto 2rem auto;
+      position: relative;
+    }
+    .search-bar-container input {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 3rem;
+      border-radius: 30px;
+      border: 2px solid var(--accent);
+      font-size: 1rem;
+      outline: none;
+      box-shadow: 0 0 0 transparent;
+      transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+    .search-bar-container input:focus {
+      border-color: #c0392b;
+      box-shadow: 0 0 8px rgba(192, 57, 43, 0.5);
+    }
+    .search-bar-container .fa-search {
+      position: absolute;
+      top: 50%;
+      left: 1rem;
+      transform: translateY(-50%);
+      color: var(--accent);
+      font-size: 1.2rem;
+      pointer-events: none;
+    }
+
+    /* --- Recipe Cards Grid --- */
+    .cards-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      justify-content: center;
+    }
+    .card {
+      background: var(--card);
+      border-radius: 12px;
+      box-shadow: 0 2px 7px rgba(0,0,0,0.1);
+      width: 270px;
+      cursor: pointer;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 10px 20px rgba(231, 76, 60, 0.3);
+    }
+    .card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-bottom: 3px solid var(--accent);
+    }
+    .card-content {
+      padding: 1rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .card-content h3 {
+      margin-bottom: 0.4rem;
+      color: var(--accent);
+      font-size: 1.2rem;
+    }
+    .card-content p {
+      color: #555;
+      font-size: 0.95rem;
+      flex-grow: 1;
+    }
+
+    /* Highlight matched text */
+    .highlight {
+      background-color: #fce9e9;
+      font-weight: 700;
+    }
+
+    /* No results message */
+    .no-results {
+      text-align: center;
+      margin-top: 2rem;
+      font-weight: 700;
+      color: #e74c3c;
+    }
+
+    /* --- Modal --- */
+    .modal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 1000;
+    }
+    .modal.show {
+      visibility: visible;
+      opacity: 1;
+    }
+    .modal-content {
+      background: var(--card);
+      color: var(--text);
+      max-width: 600px;
+      width: 90%;
+      border-radius: 12px;
+      padding: 2rem;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    .modal-content h3 {
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+    .modal-content p {
+      white-space: pre-line;
+      line-height: 1.5;
+    }
+    .modal-close {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      font-size: 2rem;
+      color: var(--accent);
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+    .modal-close:hover {
+      color: #e53b3b;
+    }
+
+    /* --- Footer --- */
+    footer.site-footer {
+      background: var(--footer-bg);
+      color: var(--footer-text);
+      padding: 1.5rem 1rem;
+      text-align: center;
+      box-shadow: 0 -4px 12px rgba(247, 108, 108, 0.4);
+      user-select: none;
+    }
+    footer.site-footer .social-icons {
+      margin: 1rem 0 0;
+      display: flex;
+      justify-content: center;
+      gap: 1.2rem;
+      font-size: 1.5rem;
+    }
+    footer.site-footer .social-icons a {
+      color: var(--footer-text);
+      transition: color 0.3s ease;
+    }
+    footer.site-footer .social-icons a:hover,
+    footer.site-footer .social-icons a:focus {
+      color: #e0b4b4;
+    }
+    footer.site-footer p {
+      font-size: 0.9rem;
+      margin-top: 0.7rem;
+      opacity: 0.9;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .card {
+        width: 90vw;
+      }
+      .search-bar-container {
+        max-width: 90vw;
+      }
+      .explore-buttons {
+        gap: 0.6rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header" role="banner">
+    <h1><i class="fas fa-utensils" aria-hidden="true"></i> Delicious Recipes</h1>
+    <p>Explore categories and search your favorite recipes!</p>
+  </header>
+
+  <main class="container" role="main">
+
+    <!-- Explore Buttons -->
+    <section class="explore-section" aria-label="Recipe Categories Filter">
+      <div class="explore-buttons" role="group" aria-label="Recipe categories filter">
+        <button class="explore-btn active" data-category="all" aria-pressed="true">All</button>
+        <button class="explore-btn" data-category="fish" aria-pressed="false">Fish</button>
+        <button class="explore-btn" data-category="chicken" aria-pressed="false">Chicken</button>
+        <button class="explore-btn" data-category="veggie" aria-pressed="false">Veggie</button>
+        <button class="explore-btn" data-category="pasta" aria-pressed="false">Pasta</button>
+      </div>
+    </section>
+
+    <!-- Search Bar -->
+    <section class="search-bar-container" aria-label="Search recipes">
+      <i class="fas fa-search"></i>
+      <input
+        type="search"
+        id="searchInput"
+        placeholder="Search recipes by title..."
+        aria-describedby="searchHelp"
+        aria-label="Search recipes by title"
+      />
+      <small id="searchHelp" style="display:none;">Start typing to filter recipes by title</small>
+    </section>
+
+    <!-- Recipes Cards -->
+    <section class="cards-container" id="cardsContainer" aria-live="polite" aria-atomic="true">
+      <!-- Recipe cards will be inserted here dynamically -->
+    </section>
+
+    <!-- No Results -->
+    <p class="no-results" id="noResults" style="display:none;">No recipes found.</p>
+  </main>
+
+  <!-- Modal for Recipe Details -->
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1">
+    <div class="modal-content">
+      <button class="modal-close" id="modalClose" aria-label="Close details">&times;</button>
+      <h3 id="modalTitle"></h3>
+      <p id="modalDescription"></p>
+    </div>
+  </div>
+
+  <footer class="site-footer" role="contentinfo">
+    <p>Follow us on social media:</p>
+    <div class="social-icons" role="list">
+      <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook" role="listitem">
+        <i class="fab fa-facebook-f"></i>
+      </a>
+      <a href="https://twitter.com" target="_blank" rel="noopener" aria-label="Twitter" role="listitem">
+        <i class="fab fa-twitter"></i>
+      </a>
+      <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram" role="listitem">
+        <i class="fab fa-instagram"></i>
+      </a>
+      <a href="https://linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn" role="listitem">
+        <i class="fab fa-linkedin-in"></i>
+      </a>
+    </div>
+    <p style="margin-top: 1rem; font-size: 0.85rem; opacity: 0.8;">&copy; 2025 Delicious Recipes. All rights reserved.</p>
+  </footer>
+
+  <script>
+    const recipes = [
+      {
+        title: "Fried Fish",
+        image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80",
+        category: "fish",
+        description: `Crispy fried fish with herbs and spices.\nSteps:\n1. Coat fish in flour.\n2. Fry until golden.\n3. Serve hot.`
+      },
+      {
+        title: "Chicken Curry",
+        image: "https://images.unsplash.com/photo-1601050690591-24d0bf1f92d3?auto=format&fit=crop&w=600&q=80",
+        category: "chicken",
+        description: `Spicy chicken curry simmered in rich gravy.\nSteps:\n1. Sauté onion and spices.\n2. Add chicken.\n3. Simmer and serve.`
+      },
+      {
+        title: "Grilled Veggie Salad",
+        image: "https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=600&q=80",
+        category: "veggie",
+        description: `Grilled vegetables with vinaigrette.\nSteps:\n1. Grill zucchini and peppers.\n2. Toss with greens.\n3. Serve chilled.`
+      },
+      {
+        title: "Pasta Alfredo",
+        image: "https://images.unsplash.com/photo-1512058564366-c9e6d9a05a97?auto=format&fit=crop&w=600&q=80",
+        category: "pasta",
+        description: `Creamy Alfredo pasta with parmesan.\nSteps:\n1. Cook pasta.\n2. Prepare Alfredo sauce.\n3. Mix and serve hot.`
+      },
+      {
+        title: "Fish Tacos",
+        image: "https://images.unsplash.com/photo-1543352634-c93d0fa3b68b?auto=format&fit=crop&w=600&q=80",
+        category: "fish",
+        description: `Delicious fish tacos with fresh salsa.\nSteps:\n1. Grill fish.\n2. Prepare salsa.\n3. Assemble tacos and enjoy.`
+      },
+      {
+        title: "Veggie Stir Fry",
+        image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80",
+        category: "veggie",
+        description: `Quick veggie stir fry with soy sauce.\nSteps:\n1. Chop veggies.\n2. Stir fry with sauce.\n3. Serve with rice.`
+      },
+      {
+        title: "Spaghetti Bolognese",
+        image: "https://images.unsplash.com/photo-1603133872877-c8bce2714a66?auto=format&fit=crop&w=600&q=80",
+        category: "pasta",
+        description: `Classic spaghetti with meat sauce.\nSteps:\n1. Prepare meat sauce.\n2. Cook spaghetti.\n3. Combine and serve.`
+      },
+      {
+        title: "Roast Chicken",
+        image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80",
+        category: "chicken",
+        description: `Juicy roast chicken with herbs.\nSteps:\n1. Season chicken.\n2. Roast in oven.\n3. Serve with sides.`
+      }
+    ];
+
+    const cardsContainer = document.getElementById("cardsContainer");
+    const noResults = document.getElementById("noResults");
+    const searchInput = document.getElementById("searchInput");
+    const exploreButtons = document.querySelectorAll(".explore-btn");
+
+    // Modal elements
+    const modal = document.getElementById("modal");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalDescription = document.getElementById("modalDescription");
+    const modalClose = document.getElementById("modalClose");
+
+    let activeCategory = "all";
+
+    // Function to highlight matched text in the title
+    function highlightText(text, searchTerm) {
+      if (!searchTerm) return text;
+      const regex = new RegExp(`(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, "gi");
+      return text.replace(regex, `<span class="highlight">$1</span>`);
+    }
+
+    function renderRecipes() {
+      const searchTerm = searchInput.value.trim().toLowerCase();
+
+      // Filter recipes by category
+      let filtered = activeCategory === "all" ? recipes : recipes.filter(r => r.category === activeCategory);
+
+      // Further filter by search term in title
+      filtered = filtered.filter(recipe => recipe.title.toLowerCase().includes(searchTerm));
+
+      cardsContainer.innerHTML = "";
+
+      if (filtered.length === 0) {
+        noResults.style.display = "block";
+        return;
+      } else {
+        noResults.style.display = "none";
+      }
+
+      filtered.forEach(recipe => {
+        const card = document.createElement("article");
+        card.className = "card";
+        card.tabIndex = 0; // make focusable for accessibility
+
+        // Highlight matched text in title
+        const highlightedTitle = highlightText(recipe.title, searchTerm);
+
+        card.innerHTML = `
+          <img src="${recipe.image}" alt="${recipe.title}" />
+          <div class="card-content">
+            <h3>${highlightedTitle}</h3>
+            <p>${recipe.description.split('\n')[0]}</p>
+          </div>
+        `;
+
+        card.addEventListener("click", () => openModal(recipe));
+        card.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            openModal(recipe);
+          }
+        });
+
+        cardsContainer.appendChild(card);
+      });
+    }
+
+    function openModal(recipe) {
+      modalTitle.textContent = recipe.title;
+      modalDescription.textContent = recipe.description;
+      modal.classList.add("show");
+      modal.focus();
+      document.body.style.overflow = "hidden"; // prevent scroll behind modal
+    }
+
+    function closeModal() {
+      modal.classList.remove("show");
+      document.body.style.overflow = ""; // restore scroll
+    }
+
+    // Setup Explore buttons filtering
+    exploreButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        exploreButtons.forEach(b => {
+          b.classList.remove("active");
+          b.setAttribute("aria-pressed", "false");
+        });
+        btn.classList.add("active");
+        btn.setAttribute("aria-pressed", "true");
+        activeCategory = btn.dataset.category;
+        renderRecipes();
+      });
+    });
+
+    // Search input event
+    searchInput.addEventListener("input", () => {
+      renderRecipes();
+    });
+
+    // Modal close button
+    modalClose.addEventListener("click", closeModal);
+
+    // Close modal on outside click
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    // Close modal on Escape key
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && modal.classList.contains("show")) {
+        closeModal();
+      }
+    });
+
+    // Initial render
+    renderRecipes();
+  </script>
+</body>
+</html>

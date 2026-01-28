@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Delicious Recipes</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    :root {
+      --bg: #fffdf7;
+      --text: #222;
+      --accent: #f76c6c;
+      --card: #fff;
+      --hover-shadow: rgba(247, 108, 108, 0.5);
+      --footer-bg: #f76c6c;
+      --footer-text: white;
+    }
+    [data-theme='dark'] {
+      --bg: #1c1c1c;
+      --text: #f4f4f4;
+      --accent: #ff8c65;
+      --card: #2e2e2e;
+      --hover-shadow: rgba(255, 140, 101, 0.7);
+      --footer-bg: #ff8c65;
+      --footer-text: #222;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      transition: background 0.3s, color 0.3s;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      z-index: 0;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1470&q=80');
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+      opacity: 0.25;
+      z-index: -1;
+      filter: brightness(0.7);
+    }
+    header {
+      background: var(--accent);
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+    header h1 {
+      font-size: 1.8rem;
+      flex-grow: 1;
+    }
+    header button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.3rem;
+      cursor: pointer;
+      padding: 0.3rem 0.6rem;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    header button:hover {
+      background: rgba(255 255 255 / 0.2);
+    }
+    main {
+      max-width: 1100px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      flex-grow: 1;
+      position: relative;
+      z-index: 1;
+    }
+    h2 {
+      text-align: center;
+      color: var(--accent);
+      margin-bottom: 2rem;
+      font-size: 2rem;
+      text-shadow: 0 0 5px rgba(0,0,0,0.2);
+    }
+    /* Flex container for cards */
+    .cards-container {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap; /* wrap to next line on small screens */
+      justify-content: center;
+    }
+    .card {
+      flex: 0 0 270px; /* fixed width */
+      background: var(--card);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .card img {
+      width: 100%;
+      height: 250px;
+      background-size: cover;
+      transition: transform 0.5s ease;
+      border-bottom: 4px solid var(--accent);
+    }
+    .card:hover img {
+      transform: scale(1.05) rotate(2deg);
+      box-shadow: 0 8px 20px var(--hover-shadow);
+    }
+    .card-content {
+      padding: 1rem;
+      flex-grow: 1;
+    }
+    .card-content h3 {
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+      font-size: 1.2rem;
+    }
+    .card-content p {
+      font-size: 0.95rem;
+      color: var(--text);
+      line-height: 1.3;
+    }
+    /* Modal styles */
+    .modal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 1000;
+    }
+    .modal.show {
+      visibility: visible;
+      opacity: 1;
+    }
+    .modal-content {
+      background: var(--card);
+      color: var(--text);
+      max-width: 600px;
+      width: 90%;
+      border-radius: 12px;
+      padding: 1.5rem 2rem;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    .modal-content h3 {
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+    .modal-content p {
+      line-height: 1.5;
+      margin-bottom: 1.2rem;
+      white-space: pre-line;
+    }
+    .modal-close {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      font-size: 1.8rem;
+      color: var(--accent);
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+    .modal-close:hover {
+      color: #e53b3b;
+    }
+
+    /* Footer */
+    footer {
+    background:#df5034;
+    color: #ece9e9;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    
+  }
+  
+  footer .socials a {
+    color: #161616;
+    text-decoration: none;
+    margin: 0 0.9rem;
+    
+    
+  }
+    @media (max-width: 600px) {
+      .card img {
+        height: 140px;
+      }
+      header {
+        justify-content: center;
+      }
+    }
+  </style>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous" defer></script>
+</head>
+<body>
+
+<header>
+  <h1>🍲 Delicious Recipes</h1>
+  <button id="toggleTheme" aria-label="Toggle Dark Mode" title="Toggle Dark Mode">
+    <i class="fas fa-moon"></i>
+  </button>
+</header>
+
+<main>
+  <h2>Click any recipe to see full details</h2>
+  <div class="cards-container" id="recipeGrid" aria-label="Recipe cards">
+    <!-- Recipe cards inserted by JS -->
+  </div>
+</main>
+
+<!-- Modal -->
+<div class="modal" id="recipeModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1">
+  <div class="modal-content">
+    <button class="modal-close" aria-label="Close modal" id="modalClose">&times;</button>
+    <h3 id="modalTitle">Recipe Title</h3>
+    <p id="modalText">Recipe description...</p>
+  </div>
+</div>
+
+<footer>
+    <div class="container">
+      <p>&copy; 2025 Delish Recipes. All rights reserved.</p>
+      <div class="socials">
+         <i class="fa-brands fa-square-facebook"></i><a href="#">Facebook</a>
+        <i class="fa-brands fa-instagram"></i><a href="#">Instagram</a> 
+        <i class="fa-brands fa-youtube"></i><a href="#">YouTube</a>
+      </div>
+    </div>
+  </footer>
+
+
+<script>
+  const recipes = [
+    {
+      title: "Fried Fish",
+      image: "image/abc.jpg" ,
+      description: `Crispy fried fish with herbs and spices.
+Steps:
+1. Coat fish in seasoned flour.
+2. Fry in hot oil until golden.
+3. Drain and serve hot with lemon.`
+    },
+    {
+      title: "Chicken Curry",
+      image: "image/chicken.jpg",
+      description: `Spicy chicken curry simmered in rich gravy.
+Steps:
+1. Sauté onions, garlic, and spices.
+2. Add chicken and cook until tender.
+3. Add tomatoes and simmer.
+4. Serve with rice or bread.`
+    },
+    {
+      title: "Grilled Fish",
+      image: "image/abc1.jpg",
+      description: `Tender grilled fish with lemon and herbs.
+Steps:
+1. Marinate fish with lemon juice and herbs.
+2. Grill on medium heat until cooked.
+3. Serve with fresh salad.`
+    },
+    {
+      title: "Chicken Salad",
+      image: "image/abc2.jpg",
+      description: `Healthy chicken salad with fresh veggies and vinaigrette.
+Steps:
+1. Grill chicken and slice.
+2. Toss mixed greens with vinaigrette.
+3. Add chicken and veggies.
+4. Serve chilled.`
+    },
+    {
+      title: "Fish Tacos",
+      image: "image/abc3.jpg",
+      description: `Delicious fish tacos with creamy sauce and fresh salsa.
+Steps:
+1. Cook fish with taco seasoning.
+2. Warm tortillas.
+3. Assemble tacos with sauce and salsa.
+4. Serve immediately.`
+    }
+  ];
+
+  const grid = document.getElementById('recipeGrid');
+  const modal = document.getElementById('recipeModal');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalText = document.getElementById('modalText');
+  const modalClose = document.getElementById('modalClose');
+  const toggleThemeBtn = document.getElementById('toggleTheme');
+  const body = document.body;
+
+  // Populate recipe cards
+  recipes.forEach((recipe, i) => {
+    const card = document.createElement('article');
+    card.className = 'card';
+    card.setAttribute('tabindex', '0');
+    card.setAttribute('role', 'button');
+    card.setAttribute('aria-pressed', 'false');
+    card.setAttribute('aria-label', `${recipe.title} recipe, click to view details`);
+    card.innerHTML = `
+      <img src="${recipe.image}" alt="${recipe.title}" />
+      <div class="card-content">
+        <h3>${recipe.title}</h3>
+        <p>${recipe.description.split('\n')[0]}...</p>
+      </div>
+    `;
+    card.addEventListener('click', () => openModal(i));
+    card.addEventListener('keypress', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openModal(i);
+      }
+    });
+    grid.appendChild(card);
+  });
+
+  function openModal(index) {
+    const recipe = recipes[index];
+    modalTitle.textContent = recipe.title;
+    modalText.textContent = recipe.description;
+    modal.classList.add('show');
+    modal.focus();
+  }
+
+  modalClose.addEventListener('click', closeModal);
+  modal.addEventListener('click', e => {
+    if (e.target === modal) closeModal();
+  });
+
+  window.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && modal.classList.contains('show')) {
+      closeModal();
+    }
+  });
+
+  function closeModal() {
+    modal.classList.remove('show');
+  }
+
+  // Dark mode toggle
+  toggleThemeBtn.addEventListener('click', () => {
+    if (body.getAttribute('data-theme') === 'dark') {
+      body.removeAttribute('data-theme');
+      toggleThemeBtn.innerHTML = '<i class="fas fa-moon"></i>';
+    } else {
+      body.setAttribute('data-theme', 'dark');
+      toggleThemeBtn.innerHTML = '<i class="fas fa-sun"></i>';
+    }
+  });
+</script>
+
+</body>
+</html>
