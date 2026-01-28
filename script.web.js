@@ -100,7 +100,7 @@ Steps: 1. Blend milk, sugar, coffee. 2. Add ice cream & serve chilled.`,
   {
     "title": "Chicken Biryani",
     "category": "Indian",
-    "image": "chicken_biryani.jpg",
+    "image": "chicken_biryani.jfif",
     "description": "Tasty Chicken Biryani recipe. Steps: 1. Prepare ingredients. 2. Cook properly. 3. Serve hot.",
     "video": "https://www.youtube.com/embed/dummy2"
   },
@@ -146,7 +146,7 @@ Steps: 1. Blend milk, sugar, coffee. 2. Add ice cream & serve chilled.`,
   {
     "title": "Cheese Sandwich",
     "category": "Fast Food",
-    "image": "sandwich.jpeg",
+    "image": "sandwic.jfif",
     "description": "Tasty Cheese Sandwich recipe. Steps: 1. Prepare ingredients. 2. Cook properly. 3. Serve hot.",
     "video": "https://www.youtube.com/embed/dummy23"
   },
@@ -270,4 +270,5 @@ document.getElementById("subscribeForm").addEventListener("submit", (e) => {
 });
 
 renderRecipes(recipes);
+
 
