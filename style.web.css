@@ -113,7 +113,7 @@ header {
 }
 
 .hero {
-  background: url('image/main.jpg') center/cover no-repeat;
+  background: url('main.jpg') center/cover no-repeat;
   color: white;
   text-align: center;
   padding: 5rem 1rem;
@@ -431,3 +431,4 @@ footer .socials a:hover {
     color: #fff;
   }
 }
+
